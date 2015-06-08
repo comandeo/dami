@@ -9,6 +9,7 @@ add_executable(
 	${dami_SOURCE_DIR}/src/tokenizer.c
 	${dami_SOURCE_DIR}/src/stack.c
 	${dami_SOURCE_DIR}/src/parser.c
+	${dami_SOURCE_DIR}/src/ast.c
 )
 
 install(TARGETS dami DESTINATION bin)

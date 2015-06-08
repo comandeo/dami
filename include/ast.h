@@ -5,8 +5,12 @@
 
 typedef struct ast_node_t {
 	token_t* token;
-	ast_node_t* left_child;
-	ast_node_t* right_child;
+	struct ast_node_t* left_child;
+	struct ast_node_t* right_child;
 } ast_node_t;
+
+void print_tree(ast_node_t* root);
+
+ast_node_t create_ast_node();
 
 #endif

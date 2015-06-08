@@ -1,17 +1,19 @@
 #ifndef __PARSER_H
 #define __PARSER_H
 
+#include "ast.h"
 #include "stack.h"
 #include "tokenizer.h"
 
 typedef struct parser_t {
-	dami_stack_t stack;
+	token_stack_t token_stack;
+	node_stack_t node_stack;
 	tokenizer_t* tokenizer;
 
 } parser_t;
 
 parser_t create_parser(tokenizer_t* tokenizer);
 
-void parse(parser_t* parser);
+ast_node_t* parse(parser_t* parser);
 
 #endif

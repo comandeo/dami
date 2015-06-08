@@ -7,6 +7,7 @@ typedef enum token_type {
 	IDENTIFIER = 100,
 	LBRACE,
 	RBRACE,
+	NODE,
 	END_OF_INPUT
 } token_type_t;
 
@@ -27,5 +28,7 @@ void release_tokenizer(tokenizer_t tokenizer);
 token_t get_next_token(tokenizer_t* tokenizer);
 
 void release_token(token_t token);
+
+char* get_token_name(token_type_t type);
 
 #endif

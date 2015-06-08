@@ -72,3 +72,25 @@ void release_token(token_t token)
 		free(token.value);
 	}
 }
+
+char* get_token_name(token_type_t type)
+{
+	switch (type) {
+		case INTEGER:
+			return "INTEGER";
+		case STRING:
+			return "STRING";
+		case IDENTIFIER:
+			return "IDENTIFIER";
+		case LBRACE:
+			return "LBRACE";
+		case RBRACE:
+			return "RBRACE";
+		case NODE:
+			return "NODE";
+		case END_OF_INPUT:
+			return "END_OF_INPUT";
+		default:
+			return "UNKNOWN TOKEN";
+	}
+}
