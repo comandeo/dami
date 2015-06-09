@@ -18,14 +18,16 @@ parser_t create_parser(tokenizer_t* tokenizer)
 
 ast_node_t* parse(parser_t* parser)
 {
-	while (1) {
+	int end_reached = 0;
+	token_t* token = (token_t*) malloc(sizeof(token_t));
+	while (!end_reached) {
 		ast_node_t* node;
-		token_t* token = (token_t*) malloc(sizeof(token_t));
 		*token = get_next_token(parser->tokenizer);
 		switch (token->type) {
 			case END_OF_INPUT:
 				puts("End reached");
-				return NULL;
+				end_reached = 1;
+				break;
 			case INTEGER:
 				printf("INTEGER with value %s\n", token->value);
 				if (node_stack_peek(&parser->node_stack, &node) == EMPTY_STACK) {
@@ -77,5 +79,8 @@ ast_node_t* parse(parser_t* parser)
 			default:
 				puts("UNKNOWN TOKEN");
 		}
+	}
+	if (token != NULL) {
+		free(token);
 	}
 }
