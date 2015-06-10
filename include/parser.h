@@ -6,7 +6,6 @@
 #include "tokenizer.h"
 
 typedef struct parser_t {
-	token_stack_t token_stack;
 	node_stack_t node_stack;
 	tokenizer_t* tokenizer;
 

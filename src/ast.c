@@ -2,28 +2,33 @@
 #include "ast.h"
 #include "tokenizer.h"
 
-void print_tree(ast_node_t* root)
+void print_tree(ast_node_t* root, int spaces)
 {
+	int i = 0;
+	for(i = 0; i < spaces; i++) {
+		putchar(' ');
+	}
 	if (root == NULL) {
 		puts("(empty)");
 		return;
 	}
-	printf("%s", get_token_name(root->token->type));
-	if (root->token->value) {
-		printf(" (%s)", root->token->value);
+	if (root->token) {
+		printf("%s", get_token_name(root->token->type));
+		if (root->token->value) {
+			printf(" (%s)", root->token->value);
+		}
 	}
 	printf("\n");
-	puts("Left child:");
-	if (root->left_child) {
-		print_tree(root->left_child);
-	} else {
-		puts("(x)");
-	}
-	puts("Right child:");
-	if (root->right_child) {
-		print_tree(root->right_child);
-	} else {
-		puts("(x)");
+	int child_number = 1;
+	ast_node_t* node = root->first_child;
+	while (node != NULL) {
+		for(i = 0; i < spaces; i++) {
+			putchar(' ');
+		}
+		printf("Child #%d\n", child_number);
+		print_tree(node, spaces + 1);
+		node = node->next_sibiling;
+		child_number++;
 	}
 }
 
@@ -31,7 +36,7 @@ ast_node_t create_ast_node()
 {
 	ast_node_t node;
 	node.token = NULL;
-	node.left_child = NULL;
-	node.right_child = NULL;
+	node.first_child = NULL;
+	node.next_sibiling = NULL;
 	return node;
 }

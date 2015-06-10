@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	puts("TREE LOADED");
 	puts("***********");
 	if (root != NULL) {
-		print_tree(root);
+		print_tree(root, 0);
 	}
 	
 	return 0;

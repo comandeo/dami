@@ -9,7 +9,6 @@ parser_t create_parser(tokenizer_t* tokenizer)
 		exit(-1);
 	}
 	parser_t parser;
-	parser.token_stack = create_token_stack();
 	parser.node_stack = create_node_stack();
 	parser.tokenizer = tokenizer;
 	return parser;
@@ -34,16 +33,16 @@ ast_node_t* parse(parser_t* parser)
 					exit(-1);
 				}
 				ast_node_t* integer_node = (ast_node_t*) malloc(sizeof(ast_node_t));
+				*integer_node = create_ast_node();
 				integer_node->token = token;
-				integer_node->left_child = NULL;
-				integer_node->right_child = NULL;
-				if (node->left_child == NULL) {
-					node->left_child = integer_node;
-				} else if (node->right_child == NULL) {
-					node->right_child = integer_node;
+				if (node->first_child == NULL) {
+					node->first_child = integer_node;
 				} else {
-					puts("ERROR");
-					exit(-1);
+					ast_node_t* last_child = node->first_child;
+					while(last_child->next_sibiling != NULL) {
+						last_child = last_child->next_sibiling;
+					}
+					last_child->next_sibiling = integer_node;
 				}
 				break;
 			case IDENTIFIER:
@@ -53,6 +52,20 @@ ast_node_t* parse(parser_t* parser)
 				}
 				if (node->token == NULL) {
 					node->token = token;
+				} else {
+					ast_node_t* new_node = (ast_node_t*) malloc(sizeof(ast_node_t));
+					*new_node = create_ast_node();
+					new_node->token = token;
+					ast_node_t* last_child = node->first_child;
+					if (node->first_child == NULL) {
+						node->first_child = new_node;
+					} else {
+						ast_node_t* last_child = node->first_child;
+						while(last_child->next_sibiling != NULL) {
+							last_child = last_child->next_sibiling;
+						}
+						last_child->next_sibiling = new_node;
+					}
 				}
 				break;
 			case LBRACE:
@@ -64,13 +77,14 @@ ast_node_t* parse(parser_t* parser)
 				node_stack_pop(&parser->node_stack, &node);
 				ast_node_t* parent_node;
 				if (node_stack_peek(&parser->node_stack, &parent_node) != EMPTY_STACK) {
-					if (parent_node->left_child == NULL) {
-						parent_node->left_child = node;
-					} else if (parent_node->right_child == NULL) {
-						parent_node->right_child = node;
+					if (parent_node->first_child == NULL) {
+						parent_node->first_child = node;
 					} else {
-						puts("ERROR");
-						exit(-1);
+						ast_node_t* last_child = parent_node->first_child;
+						while(last_child->next_sibiling != NULL) {
+							last_child = last_child->next_sibiling;
+						}
+						last_child->next_sibiling = node;
 					}
 				} else {
 					return node;
