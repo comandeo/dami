@@ -18,7 +18,7 @@ typedef struct token {
 
 typedef struct tokenizer {
 	char* input;
-	int first_call;
+	char* current_position;
 } tokenizer_t;
 
 tokenizer_t create_tokenizer(const char* input);

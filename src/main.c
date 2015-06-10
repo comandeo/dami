@@ -6,14 +6,16 @@
 
 int main(int argc, char** argv)
 {
-	char input[] = "( + 2 ( + 4 5 ) )";
-	printf("Input: %s\n", input);
-	tokenizer_t tokenizer = create_tokenizer(input);
+	printf("Input: %s\n", argv[1]);
+	tokenizer_t tokenizer = create_tokenizer(argv[1]);
 	parser_t parser = create_parser(&tokenizer);
 	ast_node_t* root = parse(&parser);
+	puts("***********");
 	puts("TREE LOADED");
+	puts("***********");
 	if (root != NULL) {
 		print_tree(root);
 	}
+	
 	return 0;
 }
