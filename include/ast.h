@@ -11,6 +11,8 @@ typedef struct ast_node_t {
 
 void print_tree(ast_node_t* root, int spaces);
 
-ast_node_t create_ast_node();
+ast_node_t* create_ast_node();
+
+void release_ast_node(ast_node_t* node);
 
 #endif

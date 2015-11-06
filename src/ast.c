@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "ast.h"
 #include "tokenizer.h"
 
@@ -32,11 +33,19 @@ void print_tree(ast_node_t* root, int spaces)
 	}
 }
 
-ast_node_t create_ast_node()
+ast_node_t* create_ast_node()
 {
-	ast_node_t node;
-	node.token = NULL;
-	node.first_child = NULL;
-	node.next_sibiling = NULL;
+	ast_node_t* node = malloc(sizeof(ast_node_t));
+	node->token = NULL;
+	node->first_child = NULL;
+	node->next_sibiling = NULL;
 	return node;
+}
+
+void release_ast_node(ast_node_t* node)
+{
+	if (!node) {
+		return;
+	}
+	free(node);
 }

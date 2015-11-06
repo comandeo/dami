@@ -21,9 +21,9 @@ typedef struct tokenizer {
 	char* current_position;
 } tokenizer_t;
 
-tokenizer_t create_tokenizer(const char* input);
+tokenizer_t* create_tokenizer(const char* input);
 
-void release_tokenizer(tokenizer_t tokenizer);
+void release_tokenizer(tokenizer_t* tokenizer);
 
 token_t get_next_token(tokenizer_t* tokenizer);
 

@@ -8,23 +8,26 @@ static const char WHITESPACES[] = " \n\t";
 
 static const char DELIMITERS[] = "()";
 
-tokenizer_t create_tokenizer(const char* input)
+static const char QUOTES = '"';
+
+tokenizer_t* create_tokenizer(const char* input)
 {
-	tokenizer_t tokenizer;
-	tokenizer.input = NULL;
+	tokenizer_t* tokenizer = malloc(sizeof(tokenizer_t));
+	tokenizer->input = NULL;
 	if (input != NULL) {
-		tokenizer.input = (char*) malloc(strlen(input) + 1);
-		strcpy(tokenizer.input, input);
+		tokenizer->input = (char*) malloc(strlen(input) + 1);
+		strcpy(tokenizer->input, input);
 	}
-	tokenizer.current_position = tokenizer.input;
+	tokenizer->current_position = tokenizer->input;
 	return tokenizer;
 }
 
-void release_tokenizer(tokenizer_t tokenizer)
+void release_tokenizer(tokenizer_t* tokenizer)
 {
-	if (tokenizer.input != NULL) {
-		free(tokenizer.input);
+	if (tokenizer->input != NULL) {
+		free(tokenizer->input);
 	}
+	free(tokenizer);
 }
 
 token_t get_next_token(tokenizer_t* tokenizer)
@@ -34,8 +37,8 @@ token_t get_next_token(tokenizer_t* tokenizer)
 	}
 	token_t token;
 	token.value = NULL;
-	if (tokenizer->current_position == NULL || 
-		tokenizer->current_position == '\0' || 
+	if (tokenizer->current_position == NULL ||
+		tokenizer->current_position == '\0' ||
 		strlen(tokenizer->current_position) == 0
 	) {
 		token.type = END_OF_INPUT;
@@ -47,7 +50,7 @@ token_t get_next_token(tokenizer_t* tokenizer)
 	}
 	char* end_token_pos = begin_token_pos;
 	while(
-		strchr(DELIMITERS, end_token_pos[0]) == NULL && 
+		strchr(DELIMITERS, end_token_pos[0]) == NULL &&
 		strchr(WHITESPACES, end_token_pos[0]) == NULL
 	) {
 		end_token_pos++;
@@ -63,11 +66,17 @@ token_t get_next_token(tokenizer_t* tokenizer)
 		token_string = (char*) malloc(token_string_length + 1);
 		strncpy(token_string, begin_token_pos, token_string_length);
 	}
-	// printf("Token string: '%s'\n", token_string);
+	if (token_string) {
+		printf("Token string: '%s'\n", token_string);
+	}
 	if (strcmp(token_string, "(") == 0) {
 		token.type = LBRACE;
 	} else if (strcmp(token_string, ")") == 0) {
 		token.type = RBRACE;
+	} else if (token_string[0] == QUOTES) {
+		token.value = (char*) malloc(strlen(token_string) - 1);
+		strncpy(token.value, token_string + 1, strlen(token_string) - 2);
+		token.type = STRING;
 	} else {
 		token.value = (char*) malloc(strlen(token_string) + 1);
 		strcpy(token.value, token_string);
