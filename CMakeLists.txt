@@ -16,6 +16,7 @@ add_executable(
 	${dami_SOURCE_DIR}/src/stack.c
 	${dami_SOURCE_DIR}/src/parser.c
 	${dami_SOURCE_DIR}/src/ast.c
+	${dami_SOURCE_DIR}/src/interpreter.c
 )
 
 install(TARGETS dami DESTINATION bin)
