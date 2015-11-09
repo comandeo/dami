@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "stack.h"
+#include "interpreter.h"
 
 int main(int argc, char** argv)
 {
@@ -17,6 +18,10 @@ int main(int argc, char** argv)
 		print_tree(root, 0);
 	}
 	release_tokenizer(tokenizer);
-	
+	puts("***********");
+	puts("RUNNING INTERPRETER");
+	puts("***********");
+	interpreter_t* interpreter = create_interpreter();
+	process_ast_node(interpreter, root);
 	return 0;
 }
