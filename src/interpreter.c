@@ -3,9 +3,15 @@
 #include "interpreter.h"
 #include "tokenizer.h"
 
-void plus(ast_node_t* node)
+int plus(ast_node_t* node, value_t* return_value)
 {
 	puts("Called plus");
+	long int first_argument = *(long int*)node->first_child->value;
+	long int second_argument = *(long int*)node->first_child->next_sibiling->value;
+	return_value->type = T_INTEGER;
+	return_value->content = malloc(sizeof(long int));
+	*((long int*)return_value->content) = first_argument + second_argument;
+	return 0;
 }
 
 static void setup_standard_library(interpreter_t* interpreter)
@@ -39,23 +45,31 @@ int process_ast_node(interpreter_t* interpreter, ast_node_t* root)
 	if (interpreter == NULL || root == NULL) {
 		return -1;
 	}
-	token_t* token = root->token;
-	if (token == NULL) {
-		return -1;
-	}
 	function_t* function = NULL;
-	switch (token->type) {
-		case IDENTIFIER:
-		function = get_from_hashtable(interpreter->functions_table, token->value);
+	ast_node_t* node = NULL;
+	value_t return_value;
+	switch (root->type) {
+		case PROGRAM:
+		puts("Program started");
+		node = root->first_child;
+		while (node) {
+			process_ast_node(interpreter, node);
+			node = node->next_sibiling;
+		}
+		return 0;
+
+		case FUNCTION_CALL:
+		function = get_from_hashtable(interpreter->functions_table, root->token->value);
 		if (function == NULL) {
 			return -1;
 		}
 		printf("Calling function: %s\n", function->name);
-		function->call(root);
+		function->call(root, &return_value);
+		printf("Returned %ld\n", *(long int*)return_value.content);
 		return 0;
-		break;
 
 		default:
+		printf("Unknown node type: %d\n", node->type);
 		return -1;
 	}
 }

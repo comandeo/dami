@@ -38,6 +38,8 @@ ast_node_t* parse(parser_t* parser)
 				ast_node_t* integer_node = create_ast_node();
 				integer_node->token = token;
 				integer_node->type = INTEGER_VALUE;
+				integer_node->value = malloc(sizeof(long int));
+				*((long int*)integer_node->value) = strtol(token->value, NULL, 10);
 				if (node->first_child == NULL) {
 					node->first_child = integer_node;
 				} else {
