@@ -7,6 +7,7 @@
 typedef struct function {
 	char* name;
 	unsigned int arguments_number;
+	void (*call)(ast_node_t* node);
 } function_t;
 
 typedef struct interpreter {

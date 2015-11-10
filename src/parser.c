@@ -18,6 +18,9 @@ parser_t* create_parser(tokenizer_t* tokenizer)
 ast_node_t* parse(parser_t* parser)
 {
 	int end_reached = 0;
+	ast_node_t* root_node = create_ast_node();
+	root_node->type = PROGRAM;
+	node_stack_push(parser->node_stack, root_node);
 	while (!end_reached) {
 		ast_node_t* node;
 		token_t* token = (token_t*) malloc(sizeof(token_t));
@@ -34,6 +37,7 @@ ast_node_t* parse(parser_t* parser)
 				}
 				ast_node_t* integer_node = create_ast_node();
 				integer_node->token = token;
+				integer_node->type = INTEGER_VALUE;
 				if (node->first_child == NULL) {
 					node->first_child = integer_node;
 				} else {
@@ -51,9 +55,11 @@ ast_node_t* parse(parser_t* parser)
 				}
 				if (node->token == NULL) {
 					node->token = token;
+					node->type = STRING_VALUE;
 				} else {
 					ast_node_t* new_node = create_ast_node();
 					new_node->token = token;
+					new_node->type = STRING_VALUE;
 					if (node->first_child == NULL) {
 						node->first_child = new_node;
 					} else {
@@ -70,11 +76,13 @@ ast_node_t* parse(parser_t* parser)
 				if (node_stack_peek(parser->node_stack, &node) == EMPTY_STACK) {
 					exit(-1);
 				}
-				if (node->token == NULL) {
+				if (node->token == NULL && node->type != PROGRAM) {
+					node->type = FUNCTION_CALL;
 					node->token = token;
 				} else {
 					ast_node_t* new_node = create_ast_node();
 					new_node->token = token;
+					new_node->type = FUNCTION_CALL;
 					if (node->first_child == NULL) {
 						node->first_child = new_node;
 					} else {
@@ -105,7 +113,7 @@ ast_node_t* parse(parser_t* parser)
 						last_child->next_sibiling = node;
 					}
 				} else {
-					return node;
+					return NULL;
 				}
 				break;
 			default:
@@ -113,5 +121,5 @@ ast_node_t* parse(parser_t* parser)
 				return NULL;
 		}
 	}
-	return NULL;
+	return root_node;
 }

@@ -3,6 +3,22 @@
 #include "ast.h"
 #include "tokenizer.h"
 
+static char* get_node_name(ast_node_type_t type)
+{
+	switch (type) {
+		case PROGRAM:
+		return "PROGRAM";
+		case FUNCTION_CALL:
+		return "FUNCTION_CALL";
+		case INTEGER_VALUE:
+		return "INTEGER_VALUE";
+		case STRING_VALUE:
+		return "STRING_VALUE";
+		default:
+		return "UNKNOWN NODE TYPE";
+	}
+}
+
 void print_tree(ast_node_t* root, int spaces)
 {
 	int i = 0;
@@ -13,11 +29,14 @@ void print_tree(ast_node_t* root, int spaces)
 		puts("(empty)");
 		return;
 	}
+	printf("Node: (%s) ", get_node_name(root->type));
 	if (root->token) {
-		printf("%s", get_token_name(root->token->type));
+		printf("Token: %s", get_token_name(root->token->type));
 		if (root->token->value) {
 			printf(" (%s)", root->token->value);
 		}
+	} else {
+		printf("(no token)");
 	}
 	printf("\n");
 	int child_number = 1;
@@ -37,6 +56,7 @@ ast_node_t* create_ast_node()
 {
 	ast_node_t* node = malloc(sizeof(ast_node_t));
 	node->token = NULL;
+	node->value = NULL;
 	node->first_child = NULL;
 	node->next_sibiling = NULL;
 	return node;
