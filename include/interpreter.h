@@ -17,6 +17,7 @@ typedef struct value {
 typedef struct function {
 	char* name;
 	unsigned int arguments_number;
+	type_t* argument_types;
 	int (*call)(ast_node_t* node, value_t* return_value);
 } function_t;
 

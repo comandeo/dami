@@ -19,6 +19,9 @@ static void setup_standard_library(interpreter_t* interpreter)
 	function_t* plus_fn = malloc(sizeof(function_t));
 	plus_fn->name = "+";
 	plus_fn->arguments_number = 2;
+	plus_fn->argument_types = calloc(2, sizeof(type_t));
+	plus_fn->argument_types[0] = T_INTEGER;
+	plus_fn->argument_types[1] = T_INTEGER;
 	plus_fn->call = &plus;
 	put_to_hashtable(interpreter->functions_table, "+", plus_fn, sizeof(function_t));
 }
