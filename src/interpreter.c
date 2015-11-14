@@ -17,8 +17,10 @@ static type_t get_type_by_node_type(ast_node_type_t node_type)
 static int plus(value_t** arguments, value_t* return_value)
 {
 	puts("Called plus");
-	long int first_argument = ((integer_value_t*)arguments[0])->content;
-	long int second_argument = ((integer_value_t*)arguments[1])->content;
+	long int first_argument = *((integer_value_t*)arguments[0])->content;
+	printf("Plus first argument: %ld\n", first_argument);
+	long int second_argument = *((integer_value_t*)arguments[1])->content;
+	printf("Plus second argument: %ld\n", second_argument);
 	return_value->type = T_INTEGER;
 	return_value->content = malloc(sizeof(long int));
 	*((long int*)return_value->content) = first_argument + second_argument;

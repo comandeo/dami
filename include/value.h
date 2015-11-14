@@ -9,7 +9,7 @@ typedef enum type {
 
 typedef struct integer_value {
 	type_t type;
-	long int content;
+	long int* content;
 } integer_value_t;
 
 typedef struct string_value {
