@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "stack.h"
 #include "interpreter.h"
+#include "value.h"
 
 int main(int argc, char** argv)
 {

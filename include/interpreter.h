@@ -3,22 +3,13 @@
 
 #include "ast.h"
 #include "hashtable.h"
-
-typedef enum type {
-	T_INTEGER = 1,
-	T_STRING
-} type_t;
-
-typedef struct value {
-	type_t type;
-	void* content;
-} value_t;
+#include "value.h"
 
 typedef struct function {
 	char* name;
 	unsigned int arguments_number;
 	type_t* argument_types;
-	int (*call)(ast_node_t* node, value_t* return_value);
+	int (*call)(value_t** arguments, value_t* return_value);
 } function_t;
 
 typedef struct interpreter {

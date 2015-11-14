@@ -3,11 +3,22 @@
 #include "interpreter.h"
 #include "tokenizer.h"
 
-int plus(ast_node_t* node, value_t* return_value)
+static type_t get_type_by_node_type(ast_node_type_t node_type)
+{
+	switch(node_type) {
+		case INTEGER_VALUE:
+		return T_INTEGER;
+
+		default:
+		return T_UNKNOWN;
+	}
+}
+
+static int plus(value_t** arguments, value_t* return_value)
 {
 	puts("Called plus");
-	long int first_argument = *(long int*)node->first_child->value;
-	long int second_argument = *(long int*)node->first_child->next_sibiling->value;
+	long int first_argument = ((integer_value_t*)arguments[0])->content;
+	long int second_argument = ((integer_value_t*)arguments[1])->content;
 	return_value->type = T_INTEGER;
 	return_value->content = malloc(sizeof(long int));
 	*((long int*)return_value->content) = first_argument + second_argument;
@@ -43,14 +54,43 @@ void release_interpreter(interpreter_t* interpreter)
 	free(interpreter);
 }
 
+int process_function_call_node(interpreter_t* interpreter, ast_node_t* node)
+{
+	function_t* function  = get_from_hashtable(interpreter->functions_table, node->token->value);
+	if (function == NULL) {
+		return -1;
+	}
+	value_t** arguments = calloc(function->arguments_number, sizeof(value_t*));
+	ast_node_t* argument_node = node->first_child;
+	size_t argument_number = 0;
+	while (argument_node) {
+		if (get_type_by_node_type(argument_node->type) != function->argument_types[argument_number]) {
+			// TODO: free memory
+			return -1;
+		}
+		arguments[argument_number] = create_value(function->argument_types[argument_number]);
+		arguments[argument_number]->content = argument_node->value;
+		argument_number++;
+		argument_node = argument_node->next_sibiling;
+	}
+	if (argument_number < function->arguments_number - 1) {
+		// TODO: free memory
+		return -1;
+	}
+	printf("Calling function: %s\n", function->name);
+	value_t return_value;
+	function->call(arguments, &return_value);
+	printf("Returned %ld\n", *(long int*)return_value.content);
+	// TODO: free memory
+	return 0;
+}
+
 int process_ast_node(interpreter_t* interpreter, ast_node_t* root)
 {
 	if (interpreter == NULL || root == NULL) {
 		return -1;
 	}
-	function_t* function = NULL;
 	ast_node_t* node = NULL;
-	value_t return_value;
 	switch (root->type) {
 		case PROGRAM:
 		puts("Program started");
@@ -62,14 +102,7 @@ int process_ast_node(interpreter_t* interpreter, ast_node_t* root)
 		return 0;
 
 		case FUNCTION_CALL:
-		function = get_from_hashtable(interpreter->functions_table, root->token->value);
-		if (function == NULL) {
-			return -1;
-		}
-		printf("Calling function: %s\n", function->name);
-		function->call(root, &return_value);
-		printf("Returned %ld\n", *(long int*)return_value.content);
-		return 0;
+		return process_function_call_node(interpreter, root);
 
 		default:
 		printf("Unknown node type: %d\n", node->type);
