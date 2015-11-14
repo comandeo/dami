@@ -4,6 +4,7 @@
 typedef enum type {
 	T_INTEGER = 1,
 	T_STRING,
+	T_ANY,
 	T_UNKNOWN
 } type_t;
 
@@ -26,5 +27,7 @@ typedef struct value {
 value_t* create_value(type_t type);
 
 void release_value(value_t* value);
+
+void print_value(value_t* value);
 
 #endif

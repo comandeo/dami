@@ -4,15 +4,17 @@
 #include "ast.h"
 #include "hashtable.h"
 #include "value.h"
+#include "stack.h"
 
 typedef struct function {
 	char* name;
 	unsigned int arguments_number;
 	type_t* argument_types;
-	int (*call)(value_t** arguments, value_t* return_value);
+	int (*call)(stack_t* stack);
 } function_t;
 
 typedef struct interpreter {
+	stack_t* stack;
 	hashtable_t* functions_table;
 } interpreter_t;
 

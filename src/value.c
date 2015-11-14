@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "value.h"
 
 value_t* create_value(type_t type)
@@ -41,6 +42,25 @@ void release_value(value_t* value)
 			free(string_value->content);
 		}
 		free(string_value);
+		break;
+
+		case T_UNKNOWN:
+		break;
+	}
+}
+
+void print_value(value_t* value)
+{
+	if (!value) {
+		return;
+	}
+	switch (value->type) {
+		case T_INTEGER:
+		printf("%ld\n", *(long int*)value->content);
+		break;
+
+		case T_STRING:
+		printf("%s\n", (char*)value->content);
 		break;
 
 		case T_UNKNOWN:

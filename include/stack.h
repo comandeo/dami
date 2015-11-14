@@ -8,22 +8,21 @@
 
 #define STACK_DEPTH 1024
 
-typedef struct node_stack_t {
-	ast_node_t* stack[STACK_DEPTH];
+typedef struct stack_t {
+	void* stack[STACK_DEPTH];
 	int top;
-} node_stack_t;
+} stack_t;
 
-node_stack_t* create_node_stack();
+stack_t* create_stack();
 
-void release_node_stack(node_stack_t* stack);
+void release_stack(stack_t* stack);
 
-int node_stack_peek(node_stack_t* stack, ast_node_t** item);
+int stack_peek(stack_t* stack, void** item);
 
-int node_stack_pop(node_stack_t* stack, ast_node_t** item);
+int stack_pop(stack_t* stack, void** item);
 
-int node_stack_push(node_stack_t* stack, ast_node_t* item);
+int stack_push(stack_t* stack, void* item);
 
-int node_stack_size(node_stack_t* stack);
-
+int stack_size(stack_t* stack);
 
 #endif
