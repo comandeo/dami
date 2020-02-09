@@ -47,18 +47,18 @@ void print_tree(ast_node_t* root, int spaces)
 		}
 		printf("Child #%d\n", child_number);
 		print_tree(node, spaces + 1);
-		node = node->next_sibiling;
+		node = node->next_sibling;
 		child_number++;
 	}
 }
 
 ast_node_t* create_ast_node()
 {
-	ast_node_t* node = malloc(sizeof(ast_node_t));
+	ast_node_t* node = (ast_node_t*) malloc(sizeof(ast_node_t));
 	node->token = NULL;
 	node->value = NULL;
 	node->first_child = NULL;
-	node->next_sibiling = NULL;
+	node->next_sibling = NULL;
 	return node;
 }
 

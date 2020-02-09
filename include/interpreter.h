@@ -1,27 +1,29 @@
 #ifndef __INTERPRETER_H
 #define __INTERPRETER_H 1
 
+#include <stack>
+#include <unordered_map>
+#include <string>
 #include "ast.h"
-#include "hashtable.h"
 #include "value.h"
-#include "stack.h"
 
-typedef struct function {
-	char* name;
+struct function_t {
+	std::string name;
 	unsigned int arguments_number;
 	type_t* argument_types;
-	int (*call)(stack_t* stack);
-} function_t;
+	int (*call)(std::stack<value_t*> &stack);
+};
 
-typedef struct interpreter {
-	stack_t* stack;
-	hashtable_t* functions_table;
-} interpreter_t;
-
-interpreter_t* create_interpreter();
-
-void release_interpreter(interpreter_t* interpreter);
-
-int process_ast_node(interpreter_t* interpreter, ast_node_t* root);
+struct interpreter_t {
+	public:
+		interpreter_t();
+		int process_ast_node(ast_node_t* root);
+	private:
+		void setup_standard_library();
+		int process_function_call_node(ast_node_t* node);
+	private:
+		std::stack<value_t*> stack;
+		std::unordered_map<std::string, function_t*> functions_table;
+};
 
 #endif

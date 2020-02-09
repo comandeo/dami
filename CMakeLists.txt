@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.15)
 project(dami)
 
 #find_package(LLVM REQUIRED CONFIG)
@@ -11,14 +11,12 @@ include_directories(${dami_SOURCE_DIR}/include)
 
 add_executable(
 	dami
-	${dami_SOURCE_DIR}/src/main.c
-	${dami_SOURCE_DIR}/src/hashtable.c
-	${dami_SOURCE_DIR}/src/tokenizer.c
-	${dami_SOURCE_DIR}/src/stack.c
-	${dami_SOURCE_DIR}/src/parser.c
-	${dami_SOURCE_DIR}/src/ast.c
-	${dami_SOURCE_DIR}/src/interpreter.c
-	${dami_SOURCE_DIR}/src/value.c
+	${dami_SOURCE_DIR}/src/main.cpp
+	${dami_SOURCE_DIR}/src/tokenizer.cpp
+	${dami_SOURCE_DIR}/src/parser.cpp
+	${dami_SOURCE_DIR}/src/ast.cpp
+	${dami_SOURCE_DIR}/src/interpreter.cpp
+	${dami_SOURCE_DIR}/src/value.cpp
 )
 
 install(TARGETS dami DESTINATION bin)

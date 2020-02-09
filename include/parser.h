@@ -1,18 +1,17 @@
 #ifndef __PARSER_H
 #define __PARSER_H
 
+#include <stack>
 #include "ast.h"
-#include "stack.h"
-#include "tokenizer.h"
 
-typedef struct parser_t {
-	stack_t* node_stack;
-	tokenizer_t* tokenizer;
+class parser_t {
+	public:
+		parser_t(tokenizer_t* tokenizer);
+		ast_node_t* parse();
+	private:
+		tokenizer_t* tokenizer;
+		std::stack<ast_node_t*> node_stack;
 
-} parser_t;
-
-parser_t* create_parser(tokenizer_t* tokenizer);
-
-ast_node_t* parse(parser_t* parser);
+};
 
 #endif

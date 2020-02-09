@@ -10,13 +10,13 @@ typedef enum ast_node_type {
 	STRING_VALUE
 } ast_node_type_t;
 
-typedef struct ast_node_t {
+struct ast_node_t {
 	token_t* token;
 	ast_node_type_t type;
 	void* value;
 	struct ast_node_t* first_child;
-	struct ast_node_t* next_sibiling;
-} ast_node_t;
+	struct ast_node_t* next_sibling;
+};
 
 void print_tree(ast_node_t* root, int spaces);
 

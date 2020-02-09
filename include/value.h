@@ -1,6 +1,8 @@
 #ifndef __VALUE_H
 #define __VALUE_H 1
 
+#include <string>
+
 typedef enum type {
 	T_INTEGER = 1,
 	T_STRING,
@@ -8,26 +10,34 @@ typedef enum type {
 	T_UNKNOWN
 } type_t;
 
-typedef struct integer_value {
-	type_t type;
-	long int* content;
-} integer_value_t;
+class value_t {
+public:
+    virtual ~value_t() {}
+    virtual void* content() = 0;
+    virtual type_t type() = 0;
+    virtual void print() = 0;
+};
 
-typedef struct string_value {
-	type_t type;
-	char* content;
-	int length;
-} string_value_t;
+class integer_value_t : public virtual value_t {
+public:
+    integer_value_t(long val);
+    virtual ~integer_value_t();
+    virtual void* content();
+    virtual type_t type();
+    virtual void print();
+private:
+    long value_;
+};
 
-typedef struct value {
-	type_t type;
-	void* content;
-} value_t;
-
-value_t* create_value(type_t type);
-
-void release_value(value_t* value);
-
-void print_value(value_t* value);
+class string_value_t : public virtual value_t {
+public:
+    string_value_t(std::string& val);
+    virtual ~string_value_t();
+    virtual void* content();
+    virtual type_t type();
+    virtual void print();
+private:
+    std::string value_;
+};
 
 #endif

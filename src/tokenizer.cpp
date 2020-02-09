@@ -12,7 +12,7 @@ static const char QUOTES = '"';
 
 tokenizer_t* create_tokenizer(const char* input)
 {
-	tokenizer_t* tokenizer = malloc(sizeof(tokenizer_t));
+	tokenizer_t* tokenizer = (tokenizer_t*) malloc(sizeof(tokenizer_t));
 	tokenizer->input = NULL;
 	if (input != NULL) {
 		tokenizer->input = (char*) malloc(strlen(input) + 1);
