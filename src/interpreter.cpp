@@ -25,28 +25,24 @@ static value_t* create_value_by_node_type(ast_node_t* node) {
 }
 
 static int plus(std::stack<value_t *> &stack) {
-    puts("Called plus");
     value_t *first_value = stack.top();
     stack.pop();
     if (!first_value || !first_value->content() || first_value->type() != T_INTEGER) {
         return -1;
     }
     long int first_argument = *static_cast<long*>(first_value->content());
-    printf("Plus first argument: %ld\n", first_argument);
     value_t *second_value = stack.top();
     stack.pop();
     if (!second_value || !second_value->content() || second_value->type() != T_INTEGER) {
         return -1;
     }
     long int second_argument = *static_cast<long*>(second_value->content());
-    printf("Plus second argument: %ld\n", second_argument);
     integer_value_t *return_value = new integer_value_t(first_argument + second_argument);
     stack.push(return_value);
     return 0;
 }
 
 static int print(std::stack<value_t *> &stack) {
-    puts("Called plus");
     value_t *value = NULL;
     value = stack.top();
     stack.pop();
@@ -115,7 +111,6 @@ int interpreter_t::process_function_call_node(ast_node_t *node) {
         }
         return -1;
     }
-    printf("Calling function: %s\n", function->name.c_str());
     int return_code = function->call(stack);
     if (return_code != 0) {
         puts("OMG Panic!");
@@ -128,7 +123,6 @@ int interpreter_t::process_ast_node(ast_node_t *root) {
     ast_node_t *node = NULL;
     switch (root->type) {
         case PROGRAM:
-            puts("Program started");
             node = root->first_child;
             while (node) {
                 process_ast_node(node);

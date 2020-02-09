@@ -14,7 +14,7 @@ parser_t::parser_t(tokenizer_t* tokenizer)
 ast_node_t* parser_t::parse()
 {
 	int end_reached = 0;
-	ast_node_t* root_node = create_ast_node();
+    ast_node_t* root_node = new ast_node_t();
 	root_node->type = PROGRAM;
 	node_stack.push(root_node);
 	while (!end_reached) {
@@ -22,16 +22,14 @@ ast_node_t* parser_t::parse()
 		token_t* token =  tokenizer->get_next_token();
 		switch (token->type) {
 			case END_OF_INPUT:
-				puts("End reached");
 				end_reached = 1;
 				break;
 			case INTEGER:
 			{
-				printf("INTEGER with value %s\n", token->value.c_str());
 				if (node_stack.empty()) {
 					exit(-1);
 				}
-				ast_node_t* integer_node = create_ast_node();
+				ast_node_t* integer_node = new ast_node_t();
 				integer_node->token = token;
 				integer_node->type = INTEGER_VALUE;
 				integer_node->value = malloc(sizeof(long int));
@@ -48,13 +46,12 @@ ast_node_t* parser_t::parse()
 				break;
 			}
 			case STRING:
-				printf("STRING %s\n", token->value.c_str());
 				node = node_stack.top();
 				if (node->token == NULL) {
 					node->token = token;
 					node->type = STRING_VALUE;
 				} else {
-					ast_node_t* new_node = create_ast_node();
+                    ast_node_t* new_node = new ast_node_t();
 					new_node->token = token;
 					new_node->type = STRING_VALUE;
 					if (node->first_child == NULL) {
@@ -69,13 +66,12 @@ ast_node_t* parser_t::parse()
 				}
 				break;
 			case IDENTIFIER:
-				printf("IDENTIFIER %s\n", token->value.c_str());
 				node = node_stack.top();
 				if (node->token == NULL && node->type != PROGRAM) {
 					node->type = FUNCTION_CALL;
 					node->token = token;
 				} else {
-					ast_node_t* new_node = create_ast_node();
+					ast_node_t* new_node = new ast_node_t();
 					new_node->token = token;
 					new_node->type = FUNCTION_CALL;
 					if (node->first_child == NULL) {
@@ -90,11 +86,9 @@ ast_node_t* parser_t::parse()
 				}
 				break;
 			case LBRACE:
-				puts("LBRACE");
-				node_stack.push(create_ast_node());
+				node_stack.push(new ast_node_t());
 				break;
 			case RBRACE: {
-                puts("RBRACE");
                 node = node_stack.top();
                 node_stack.pop();
                 ast_node_t *parent_node = node_stack.top();
@@ -110,7 +104,6 @@ ast_node_t* parser_t::parse()
                 break;
             }
 			default:
-				puts("UNKNOWN TOKEN");
 				return NULL;
 		}
 	}

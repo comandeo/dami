@@ -58,9 +58,6 @@ token_t* tokenizer_t::get_next_token()
 		token_string = (char*) malloc(token_string_length + 1);
 		strncpy(token_string, begin_token_pos, token_string_length);
 	}
-	if (token_string) {
-		printf("Token string: '%s'\n", token_string);
-	}
 	if (strcmp(token_string, "(") == 0) {
 		token_type = LBRACE;
 	} else if (strcmp(token_string, ")") == 0) {
