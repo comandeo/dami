@@ -10,41 +10,31 @@ static const char DELIMITERS[] = "()";
 
 static const char QUOTES = '"';
 
-tokenizer_t* create_tokenizer(const char* input)
+tokenizer_t::tokenizer_t(const char* input)
 {
-	tokenizer_t* tokenizer = (tokenizer_t*) malloc(sizeof(tokenizer_t));
-	tokenizer->input = NULL;
 	if (input != NULL) {
-		tokenizer->input = (char*) malloc(strlen(input) + 1);
-		strcpy(tokenizer->input, input);
+		input_ = (char*) malloc(strlen(input) + 1);
+		strcpy(input_, input);
 	}
-	tokenizer->current_position = tokenizer->input;
-	return tokenizer;
+	current_position_ = input_;
 }
 
-void release_tokenizer(tokenizer_t* tokenizer)
+tokenizer_t::~tokenizer_t()
 {
-	if (tokenizer->input != NULL) {
-		free(tokenizer->input);
+	if (input_ != NULL) {
+		free(input_);
 	}
-	free(tokenizer);
 }
 
-token_t get_next_token(tokenizer_t* tokenizer)
+token_t* tokenizer_t::get_next_token()
 {
-	if (tokenizer == NULL) {
-		exit(-1);
-	}
-	token_t token;
-	token.value = NULL;
-	if (tokenizer->current_position == NULL ||
-		tokenizer->current_position == '\0' ||
-		strlen(tokenizer->current_position) == 0
+	if (current_position_ == NULL ||
+		current_position_ == '\0' ||
+		strlen(current_position_) == 0
 	) {
-		token.type = END_OF_INPUT;
-		return token;
+        return new token_t(END_OF_INPUT, std::string(""));
 	}
-	char* begin_token_pos = tokenizer->current_position;
+	char* begin_token_pos = current_position_;
 	while(strchr(WHITESPACES, begin_token_pos[0]) != NULL) {
 		begin_token_pos++;
 	}
@@ -55,6 +45,8 @@ token_t get_next_token(tokenizer_t* tokenizer)
 	) {
 		end_token_pos++;
 	}
+    token_type_t token_type = UNKNOWN;
+    std::string token_value("");
 	char* token_string = NULL;
 	if (begin_token_pos == end_token_pos) {
 		token_string = (char*) malloc(2);
@@ -70,38 +62,30 @@ token_t get_next_token(tokenizer_t* tokenizer)
 		printf("Token string: '%s'\n", token_string);
 	}
 	if (strcmp(token_string, "(") == 0) {
-		token.type = LBRACE;
+		token_type = LBRACE;
 	} else if (strcmp(token_string, ")") == 0) {
-		token.type = RBRACE;
+		token_type = RBRACE;
 	} else if (token_string[0] == QUOTES) {
-		token.value = (char*) malloc(strlen(token_string) - 1);
-		strncpy(token.value, token_string + 1, strlen(token_string) - 2);
-		token.type = STRING;
+        token_value = std::string(token_string + 1, strlen(token_string) - 2);
+		token_type = STRING;
 	} else {
-		token.value = (char*) malloc(strlen(token_string) + 1);
-		strcpy(token.value, token_string);
+		token_value = std::string(token_string);
 		char* p = NULL;
 		long int long_value = strtol(token_string, &p, 10);
 		if (!(long_value == 0L && p == token_string)) {
-			token.type = INTEGER;
+			token_type = INTEGER;
 		} else {
-			token.type = IDENTIFIER;
+			token_type = IDENTIFIER;
 		}
 	}
 	free(token_string);
-	tokenizer->current_position = end_token_pos;
-	// printf("Input left: '%s'\n", tokenizer->current_position);
-	return token;
+	current_position_ = end_token_pos;
+	return new token_t(token_type, token_value);
 }
 
-void release_token(token_t token)
-{
-	if (token.value != NULL) {
-		free(token.value);
-	}
-}
+token_t::token_t(token_type_t t, std::string v) : type(t), value(v) {}
 
-char* get_token_name(token_type_t type)
+std::string token_t::name()
 {
 	switch (type) {
 		case INTEGER:

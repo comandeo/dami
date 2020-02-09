@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	fread (buffer, 1, length, input_file);
 	printf("Input: %s\n", buffer);
 	buffer[length] = 0;
-	tokenizer_t* tokenizer = create_tokenizer(buffer);
+	tokenizer_t* tokenizer = new tokenizer_t(buffer);
 	parser_t* parser = new parser_t(tokenizer);
 	ast_node_t* root = parser->parse();
 	puts("***********");
@@ -41,7 +41,6 @@ int main(int argc, char** argv)
 		puts("Parsing error");
 		exit(1);
 	}
-	release_tokenizer(tokenizer);
 	puts("*******************");
 	puts("RUNNING INTERPRETER");
 	puts("*******************");

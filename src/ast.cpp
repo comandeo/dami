@@ -31,10 +31,8 @@ void print_tree(ast_node_t* root, int spaces)
 	}
 	printf("Node: (%s) ", get_node_name(root->type));
 	if (root->token) {
-		printf("Token: %s", get_token_name(root->token->type));
-		if (root->token->value) {
-			printf(" (%s)", root->token->value);
-		}
+		printf("Token: %s", root->token->name().c_str());
+        printf(" (%s)", root->token->value.c_str());
 	} else {
 		printf("(no token)");
 	}

@@ -1,6 +1,8 @@
 #ifndef __TOKENIZER_H
 #define __TOKENIZER_H
 
+#include <string>
+
 typedef enum token_type {
 	INTEGER = 1,
 	STRING,
@@ -8,27 +10,28 @@ typedef enum token_type {
 	LBRACE,
 	RBRACE,
 	NODE,
-	END_OF_INPUT
+	END_OF_INPUT,
+    UNKNOWN
 } token_type_t;
 
-typedef struct token {
+struct token_t {
+public:
+    token_t(token_type_t t, std::string v = std::string(""));
+    ~token_t();
+    std::string name();
+
 	token_type_t type;
-	char* value;
-} token_t;
+	std::string value;
+};
 
-typedef struct tokenizer {
-	char* input;
-	char* current_position;
-} tokenizer_t;
-
-tokenizer_t* create_tokenizer(const char* input);
-
-void release_tokenizer(tokenizer_t* tokenizer);
-
-token_t get_next_token(tokenizer_t* tokenizer);
-
-void release_token(token_t token);
-
-char* get_token_name(token_type_t type);
+class tokenizer_t {
+public:
+    tokenizer_t(const char* input);
+    ~tokenizer_t();
+    token_t* get_next_token();
+private:
+	char* input_;
+	char* current_position_;
+};
 
 #endif

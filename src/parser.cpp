@@ -19,8 +19,7 @@ ast_node_t* parser_t::parse()
 	node_stack.push(root_node);
 	while (!end_reached) {
 		ast_node_t* node;
-		token_t* token = (token_t*) malloc(sizeof(token_t));
-		*token = get_next_token(tokenizer);
+		token_t* token =  tokenizer->get_next_token();
 		switch (token->type) {
 			case END_OF_INPUT:
 				puts("End reached");
@@ -28,7 +27,7 @@ ast_node_t* parser_t::parse()
 				break;
 			case INTEGER:
 			{
-				printf("INTEGER with value %s\n", token->value);
+				printf("INTEGER with value %s\n", token->value.c_str());
 				if (node_stack.empty()) {
 					exit(-1);
 				}
@@ -36,7 +35,7 @@ ast_node_t* parser_t::parse()
 				integer_node->token = token;
 				integer_node->type = INTEGER_VALUE;
 				integer_node->value = malloc(sizeof(long int));
-				*((long int*)integer_node->value) = strtol(token->value, NULL, 10);
+				*((long int*)integer_node->value) = strtol(token->value.c_str(), NULL, 10);
 				if (node->first_child == NULL) {
 					node->first_child = integer_node;
 				} else {
@@ -49,7 +48,7 @@ ast_node_t* parser_t::parse()
 				break;
 			}
 			case STRING:
-				printf("STRING %s\n", token->value);
+				printf("STRING %s\n", token->value.c_str());
 				node = node_stack.top();
 				if (node->token == NULL) {
 					node->token = token;
@@ -70,7 +69,7 @@ ast_node_t* parser_t::parse()
 				}
 				break;
 			case IDENTIFIER:
-				printf("IDENTIFIER %s\n", token->value);
+				printf("IDENTIFIER %s\n", token->value.c_str());
 				node = node_stack.top();
 				if (node->token == NULL && node->type != PROGRAM) {
 					node->type = FUNCTION_CALL;
