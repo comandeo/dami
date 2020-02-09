@@ -39,12 +39,20 @@ token_t* tokenizer_t::get_next_token()
 		begin_token_pos++;
 	}
 	char* end_token_pos = begin_token_pos;
-	while(
-		strchr(DELIMITERS, end_token_pos[0]) == NULL &&
-		strchr(WHITESPACES, end_token_pos[0]) == NULL
-	) {
-		end_token_pos++;
-	}
+    if (end_token_pos[0] == '"') {
+        end_token_pos++;
+        while (end_token_pos[0] != '"') {
+            end_token_pos++;
+        }
+        end_token_pos++;
+    } else {
+        while(
+            strchr(DELIMITERS, end_token_pos[0]) == NULL &&
+            strchr(WHITESPACES, end_token_pos[0]) == NULL
+        ) {
+            end_token_pos++;
+        }
+    }
     token_type_t token_type = UNKNOWN;
     std::string token_value("");
 	char* token_string = NULL;
@@ -55,7 +63,7 @@ token_t* tokenizer_t::get_next_token()
 		end_token_pos++;
 	} else {
 		int token_string_length = end_token_pos - begin_token_pos;
-		token_string = (char*) malloc(token_string_length + 1);
+		token_string = (char*) calloc(token_string_length + 1, 1);
 		strncpy(token_string, begin_token_pos, token_string_length);
 	}
 	if (strcmp(token_string, "(") == 0) {

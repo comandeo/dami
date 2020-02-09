@@ -17,7 +17,10 @@ static type_t get_type_by_node_type(ast_node_type_t node_type)
 static value_t* create_value_by_node_type(ast_node_t* node) {
     switch (node->type) {
         case INTEGER_VALUE:
-            return new integer_value_t(*static_cast<long*>(node->value));
+            return node->value;
+        case STRING_VALUE:
+            return node->value;
+
 
         default:
             return nullptr;
@@ -38,6 +41,24 @@ static int plus(std::stack<value_t *> &stack) {
     }
     long int second_argument = *static_cast<long*>(second_value->content());
     integer_value_t *return_value = new integer_value_t(first_argument + second_argument);
+    stack.push(return_value);
+    return 0;
+}
+
+static int minus(std::stack<value_t *> &stack) {
+    value_t *second_value = stack.top();
+    stack.pop();
+    if (!second_value || !second_value->content() || second_value->type() != T_INTEGER) {
+        return -1;
+    }
+    long int second_argument = *static_cast<long*>(second_value->content());
+    value_t *first_value = stack.top();
+    stack.pop();
+    if (!first_value || !first_value->content() || first_value->type() != T_INTEGER) {
+        return -1;
+    }
+    long int first_argument = *static_cast<long*>(first_value->content());
+    integer_value_t *return_value = new integer_value_t(first_argument - second_argument);
     stack.push(return_value);
     return 0;
 }
@@ -67,6 +88,16 @@ void interpreter_t::setup_standard_library() {
     plus_fn->call = &plus;
     functions_table[plus_fn->name] = plus_fn;
 
+    function_t *minus_fn = (function_t *) malloc(sizeof(function_t));
+    minus_fn->name = "-";
+    minus_fn->arguments_number = 2;
+    minus_fn->argument_types = (type_t *) calloc(plus_fn->arguments_number, sizeof(type_t));
+    minus_fn->argument_types[0] = T_INTEGER;
+    minus_fn->argument_types[1] = T_INTEGER;
+    minus_fn->call = &minus;
+    functions_table[minus_fn->name] = minus_fn;
+
+    
     function_t *print_fn = (function_t *) malloc(sizeof(function_t));
     print_fn->name = "print";
     print_fn->arguments_number = 1;

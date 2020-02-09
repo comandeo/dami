@@ -17,8 +17,8 @@ ast_node_t* parser_t::parse()
     ast_node_t* root_node = new ast_node_t();
 	root_node->type = PROGRAM;
 	node_stack.push(root_node);
+    ast_node_t* node = nullptr;
 	while (!end_reached) {
-		ast_node_t* node;
 		token_t* token =  tokenizer->get_next_token();
 		switch (token->type) {
 			case END_OF_INPUT:
@@ -32,8 +32,7 @@ ast_node_t* parser_t::parse()
 				ast_node_t* integer_node = new ast_node_t();
 				integer_node->token = token;
 				integer_node->type = INTEGER_VALUE;
-				integer_node->value = malloc(sizeof(long int));
-				*((long int*)integer_node->value) = strtol(token->value.c_str(), NULL, 10);
+                integer_node->value = new integer_value_t(strtol(token->value.c_str(), NULL, 10));
 				if (node->first_child == NULL) {
 					node->first_child = integer_node;
 				} else {
@@ -50,10 +49,12 @@ ast_node_t* parser_t::parse()
 				if (node->token == NULL) {
 					node->token = token;
 					node->type = STRING_VALUE;
+                    node->value = new string_value_t(token->value);
 				} else {
                     ast_node_t* new_node = new ast_node_t();
 					new_node->token = token;
 					new_node->type = STRING_VALUE;
+                    new_node->value = new string_value_t(token->value);
 					if (node->first_child == NULL) {
 						node->first_child = new_node;
 					} else {

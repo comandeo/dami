@@ -32,6 +32,18 @@ int main(int argc, char** argv)
 	tokenizer_t* tokenizer = new tokenizer_t(buffer);
 	parser_t* parser = new parser_t(tokenizer);
 	ast_node_t* root = parser->parse();
+	puts("***********");
+	puts("TREE LOADED");
+	puts("***********");
+	if (root != NULL) {
+		root->print_tree(0);
+	} else {
+		puts("Parsing error");
+		exit(1);
+	}
+	puts("*******************");
+	puts("RUNNING INTERPRETER");
+	puts("*******************");
 	interpreter_t* interpreter = new interpreter_t();
 	interpreter->process_ast_node(root);
 	fclose(input_file);

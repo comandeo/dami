@@ -1,6 +1,7 @@
 #ifndef __NODE_H
 #define __NODE_H value
 
+#include "value.h"
 #include "tokenizer.h"
 
 typedef enum ast_node_type {
@@ -16,7 +17,7 @@ struct ast_node_t {
     
 	token_t* token;
 	ast_node_type_t type;
-	void* value;
+	value_t* value;
 	struct ast_node_t* first_child;
 	struct ast_node_t* next_sibling;
 };
